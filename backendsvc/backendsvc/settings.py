@@ -11,37 +11,30 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import os
-import environs
 from pathlib import Path
 from datetime import timedelta
+import environs
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Take environment variables from .env file
-# env = environs.Env()
-# ENV_DIR = Path(__file__).resolve().parent.parent.parent
-# env.read_env(os.path.join(ENV_DIR, '.env'))
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+env = environs.Env()
+env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-yx9ppd(_aiahse4u8t)ky6*2$km(=i9y7_5ti^tgt!-3tb!f9#"
+SECRET_KEY = env.str("SECRET_KEY", "django-insecure-yx9ppd(_aiahse4u8t)ky6*2$km(=i9y7_5ti^tgt!-3tb!f9#")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", True)
 
-ALLOWED_HOSTS = ['.vercel.app']
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=['.vercel.app'])
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
-
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -54,8 +47,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     # project apps
-    'users',
-    'portfolio',
+    'users',  # Your custom app for users
+    'portfolio',  # Your custom app for portfolio
 ]
 
 MIDDLEWARE = [
@@ -88,10 +81,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backendsvc.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -105,12 +94,8 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "ALGORITHM": "HS256",
-    "SIGNING_KEY": SECRET_KEY, 
+    "SIGNING_KEY": SECRET_KEY,
 }
-
-
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -129,9 +114,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = "users.AdminUser"
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -140,13 +122,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
 STATIC_URL = 'static/'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
